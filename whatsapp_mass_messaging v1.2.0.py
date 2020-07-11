@@ -27,13 +27,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 import socket
 import csv
 
-message_text = ""
+#message_text = ""
 #message_text = 'परिक्षण'
 # message you want to send
 
+"""
 with open('hindi_message.txt') as hindi_file:
     for text in hindi_file:
         message_text+=text
+"""
 
 no_of_message = 1
 # no. of time you want the message to be send
@@ -42,8 +44,8 @@ moblie_no_list = []
 # list of phone number can be of any length
 
 with open('test_numbers.csv', 'r') as csvfile:
-    moblie_no_list = [int(row[0])
-                      for row in csv.reader(csvfile, delimiter=';')]
+    reader = csv.reader(csvfile, delimiter=';')
+    moblie_no_list = list(reader)
 
 
 # get mobile no from csv file
@@ -123,10 +125,12 @@ def main():
 
     for moblie_no in moblie_no_list:
         try:
-            send_whatsapp_msg(phone_no=moblie_no, text=message_text)
+            print("Running...")
+            print(moblie_no)
+            send_whatsapp_msg(phone_no=moblie_no[0], text=moblie_no[1])
 
         except Exception as e:
-
+            #print("Oops!",e)
             sleep(10)
             is_connected()
 
