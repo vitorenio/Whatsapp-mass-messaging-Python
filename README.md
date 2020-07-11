@@ -20,14 +20,6 @@ A python code which uses web automation to send mass whatsapp messages to people
   </code>
   </li>
 <li>
-  <strong>1.2.0</strong> - The code is modified so the number of mobile numbers are extracted from the csv file "test_numbers.csv" and message is too extraccted from a text file.
-  The code can take the message in all different languages, for demonstration I have named the file "hindi_message.txt".
-  <br> For extracting the text use code:
-  <br>
-  <code>
-  with open('hindi_message.txt') as hindi_file:
-    for text in hindi_file:
-        message_text+=text
-  </coode>
-  </li>
+  <strong>1.2.0</strong> - The code is modified so the number of mobile numbers are extracted from the csv file "test_numbers.csv" and message is extracted from the second column of fthhis csv file.
+ 
 </ul>
