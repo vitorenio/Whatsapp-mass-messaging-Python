@@ -26,10 +26,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 import socket
 import csv
-
-#message_text = ""
-#message_text = 'परिक्षण'
-# message you want to send
+import datetime
+import sys
 
 """
 with open('hindi_message.txt') as hindi_file:
@@ -43,7 +41,7 @@ no_of_message = 1
 moblie_no_list = []
 # list of phone number can be of any length
 
-with open('test_numbers.csv', 'r') as csvfile:
+with open('test_numbers.csv', 'r', encoding="utf-8") as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
     moblie_no_list = list(reader)
 
@@ -81,7 +79,7 @@ sleep(10)
 # wait time to scan the code in second
 
 
-def send_whatsapp_msg(phone_no, text):
+def send_whatsapp_msg(phone_no, text, f):
     '''
     @author Rishit Dagli
     send_whatsapp_msg() accepts 2 arguments - phone_no and text integer and string respectively.
@@ -89,13 +87,14 @@ def send_whatsapp_msg(phone_no, text):
     Connects to whatsapp web and takes precautions for wrong mobile numbers.
     Call the isConnected method before this function.
     '''
+    print("Sending...")
 
     driver.get(
         "https://web.whatsapp.com/send?phone={}&source=&data=#".format(phone_no)
     )
 
     try:
-        driver.switch_to_alert().accept()
+       driver.switch_to.alert()
 
     except Exception as e:
         pass
@@ -111,9 +110,13 @@ def send_whatsapp_msg(phone_no, text):
         for x in range(no_of_message):
             txt_box.send_keys(text)
             txt_box.send_keys("\n")
+        
+        f.write(phone_no + ";" + text + "\n")
 
     except Exception as e:
-        print("Invailid phone no :" + str(phone_no))
+        print("Error on line {}".format(sys.exc_info()[-1].tb_lineno))
+        print("Oops.... ", e)
+        print("Invalid phone no :" + str(123))
 
 
 def main():
@@ -123,16 +126,30 @@ def main():
     to send_whatsapp_msg function
     '''
 
-    for moblie_no in moblie_no_list:
+    t = datetime.datetime.now()
+    sufix = t.strftime("%Y%m%d__%H%M%S")
+    result_file = open("result_" + sufix + ".log", "a")
+    print("Results will be collected in the file " + result_file.name)
+
+    print("Running...")
+    for line in moblie_no_list:
         try:
-            print("Running...")
-            print(moblie_no)
-            send_whatsapp_msg(phone_no=moblie_no[0], text=moblie_no[1])
+            msg = line[2].replace("%NOME%", line[1])
+            msg = str(msg)
+            print(line[0]," - ", msg)
+            send_whatsapp_msg(phone_no=str(line[0]), text=str(msg), f=result_file)
+            sleep(20)
 
         except Exception as e:
-            #print("Oops!",e)
+            print("Oops!",e)
             sleep(10)
-            is_connected()
+            #is_connected()
+            result_file.close()
+    
+    result_file.close()
+    print("Finished")
+    
+
 
 '''
 print("functions- main, element_presence, is_connected, send_whatsapp_msg")
